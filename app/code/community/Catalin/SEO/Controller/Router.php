@@ -53,27 +53,19 @@ class Catalin_SEO_Controller_Router extends Mage_Core_Controller_Varien_Router_S
             return false;
         }
 
+        // Massage path to load proper request path
+        $cat = $urlSplit[0];
+
         if(Mage::getEdition() == Mage::EDITION_ENTERPRISE){
             $urlRewrite = Mage::getModel('enterprise_urlrewrite/url_rewrite');
-            $urlRequest = Mage::getModel('enterprise_urlrewrite/url_rewrite_request');
+            $catPath = Mage::getModel('enterprise_urlrewrite/url_rewrite_request')->getSystemPaths($catPath);
         } else {
             $urlRewrite = Mage::getModel('core/url_rewrite');
+            $catPath = $cat . $suffix;
         }
 
         $urlRewrite->setStoreId(Mage::app()->getStore()->getId());
-
-        // Massage path to load proper request path
-        $cat = $urlSplit[0];
-        $catPath = $cat . $suffix;
-
-        if(Mage::getEdition() == Mage::EDITION_ENTERPRISE){
-            $paths = $urlRequest->getSystemPaths($catPath);
-        } else {
-            $paths = $catPath;
-        }
-        
-
-        $urlRewrite->loadByRequestPath($paths);
+        $urlRewrite->loadByRequestPath($catPath);
 
         // Check if a valid category is found
         if ($urlRewrite->getId()) {
