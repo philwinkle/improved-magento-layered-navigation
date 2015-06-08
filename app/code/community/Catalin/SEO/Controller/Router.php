@@ -65,7 +65,14 @@ class Catalin_SEO_Controller_Router extends Mage_Core_Controller_Varien_Router_S
         // Massage path to load proper request path
         $cat = $urlSplit[0];
         $catPath = $cat . $suffix;
-        $paths = $urlRequest->getSystemPaths($catPath);
+
+        if(Mage::getEdition() == Mage::EDITION_ENTERPRISE){
+            $paths = $urlRequest->getSystemPaths($catPath);
+        } else {
+            $paths = $catPath;
+        }
+        
+
         $urlRewrite->loadByRequestPath($paths);
 
         // Check if a valid category is found
